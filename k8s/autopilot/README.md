@@ -34,3 +34,9 @@ Create configmap
 ```sh
 kubectl create configmap cjs-configmap --from-env-file .env
 ```
+
+Modify configmap
+```sh
+# roll out the changes
+kubectl rollout restart deployment your-deployment-name
+```

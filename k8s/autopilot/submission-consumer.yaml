@@ -1,46 +1,44 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-svc
-spec:
-  type: LoadBalancer
-  selector:
-    app: backend
-  ports:
-  - port: 80
-    targetPort: 3000
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: submission-consumer
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: submission-consumer
   template:
     metadata:
       labels:
-        app: backend
+        app: submission-consumer
     spec:
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       terminationGracePeriodSeconds: 30
       containers:
-      - name: backend
+      - name: submission-consumer
         image: docker.io/wuttinanhi/codejudgesystem
         resources:
           limits:
-            cpu: 500m
+            cpu: 2000m
             ephemeral-storage: 1Gi
-            memory: 512Mi
+            memory: 2048Mi
           requests:
-            cpu: 500m
+            cpu: 2000m
             ephemeral-storage: 1Gi
-            memory: 512Mi
+            memory: 2048Mi
         ports:
         - containerPort: 3000
         envFrom:
         - configMapRef:
             name: cjs-configmap
+        env:
+        - name: APP_MODE
+          value: CONSUMER
+        volumeMounts:
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+      volumes:
+      - name: docker-socket
+        hostPath:
+          path: /var/run/docker.sock

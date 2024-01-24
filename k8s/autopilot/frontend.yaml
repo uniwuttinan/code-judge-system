@@ -15,7 +15,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -29,11 +29,16 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: frontend
-        image: docker.io/wuttinanhi/codejudgesystem-frontend:vite-fix
+        image: docker.io/wuttinanhi/codejudgesystem-frontend:latest
         resources:
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
         ports:
         - containerPort: 80
         envFrom:
